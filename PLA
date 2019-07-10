@@ -1,0 +1,44 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+xor = np.array([[1, 1], [2, 0], [0, 3], [1, 5]])
+y = np.array([1, 1, 0, 0])
+
+theta = np.random.random((2, 1))
+iteration = 5
+def sign(x):
+  if x.shape[0] < 2:
+    if x > 0:
+            return 1
+    elif x <= 0:
+            return 0
+  else:
+    return (x > 0).astype(int)
+    
+def predict(x, theta):
+    return sign(np.matmul(x, theta))
+
+
+
+for i in range(iteration):
+    
+    for sample in range(xor.shape[0]):
+        pred = predict(xor[sample, :], theta)
+        theta = theta - (pred - y[sample])*xor[sample, :].reshape(2, 1)
+        
+print(y)
+
+for i in range(xor.shape[0]):
+    pred = predict(xor[i, :], theta)
+    print(pred)
+
+
+xx1, xx2 = np.meshgrid(np.arange(0, 10, 0.01), np.arange(0, 10, 0.01))
+x_input = np.c_[xx1.ravel(), xx2.ravel()]
+z = predict(x_input, theta).reshape(xx1.shape)
+
+plt.figure()
+plt.scatter(xor[0:2, 0], xor[0:2, 1], color = 'red')
+plt.scatter(xor[2:, 0], xor[2:, 1], color = 'blue')
+plt.contour(xx1, xx2, z)
+plt.show()
